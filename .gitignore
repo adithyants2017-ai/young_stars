@@ -1,0 +1,26 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+static/
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Security
+secret.key
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.bak
