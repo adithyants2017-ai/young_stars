@@ -2,17 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "club_project/wsgi.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.12"
-      }
+      "src": "vercel_app.py",
+      "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "club_project/wsgi.py"
+      "dest": "vercel_app.py"
     }
   ]
 }

@@ -70,15 +70,30 @@ class MembershipRequest(models.Model):
             return "Error Decrypting"
 
     def _get_or_create_key(self):
+        # 1. Try Environment Variable first (Best for Production/Vercel)
+        env_key = os.environ.get('ENCRYPTION_KEY')
+        if env_key:
+            return env_key.encode()
+
+        # 2. Try local file (Best for Local Development)
         key_path = 'secret.key'
         if os.path.exists(key_path):
-            with open(key_path, 'rb') as key_file:
-                return key_file.read()
-        else:
-            key = Fernet.generate_key()
+            try:
+                with open(key_path, 'rb') as key_file:
+                    return key_file.read()
+            except:
+                pass
+
+        # 3. Last Resort: Generate and try to save (only if writable)
+        generated_key = Fernet.generate_key()
+        try:
             with open(key_path, 'wb') as key_file:
-                key_file.write(key)
-            return key
+                key_file.write(generated_key)
+        except (OSError, IOError):
+            # If we are on a read-only filesystem (Vercel), just return it
+            # This will work for the current session but not persist without ENV
+            pass
+        return generated_key
 
     def __str__(self):
         return f"{self.name} - {self.status}"
